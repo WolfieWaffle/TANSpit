@@ -1,0 +1,20 @@
+{
+  "result": {
+    "item": "tanspit:spit"
+  },
+  "pattern": [
+    "b",
+    "a"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "b": {
+      "type": "forge:ore_dict",
+      "ore": "stickWood"
+    },
+    "a": {
+      "type": "forge:ore_dict",
+      "ore": "logWood"
+    }
+  }
+}
