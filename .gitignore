@@ -20,3 +20,11 @@ build
 # other
 eclipse
 run
+
+# minecraft
+*.txt
+gradle.properties
+gradle/
+gradlew
+gradlew.bat
+libs/
