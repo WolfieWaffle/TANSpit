@@ -88,7 +88,7 @@ public class BlockSpit extends BlockContainer {
 
 				// Find an empty slot
 				if (te.inventory().getStackInSlot(i).isEmpty()) {
-					if (te.inventory().insertItem(i, new ItemStack(item.getItem()), false).isEmpty()) {
+					if (te.inventory().insertItem(i, new ItemStack(item.getItem(), 1, item.getMetadata()), false).isEmpty()) {
 
 						// Remove 1 item
 						playerIn.getHeldItem(hand).shrink(1);
