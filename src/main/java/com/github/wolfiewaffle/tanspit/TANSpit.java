@@ -16,7 +16,7 @@ public class TANSpit {
 	// This is the 1.9.4 branch
 	public static final String MOD_ID = "tanspit";
 	public static final String MODNAME = "Campfire Spit";
-	public static final String VERSION = "1.12-1.1";
+	public static final String VERSION = "1.12.2-1.1";
 
 	// Proxy
 	@SidedProxy(clientSide = "com.github.wolfiewaffle.tanspit.proxy.ClientProxy", serverSide = "com.github.wolfiewaffle.tanspit.proxy.ServerProxy")
