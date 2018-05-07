@@ -1,0 +1,12 @@
+{
+    "forge_marker": 1,
+    "defaults": {
+        "model": "tanspit:spit",
+        "uvlock": true
+    },
+    "variants": {
+        "normal": [{
+            "model": "tanspit:spit"
+        }]
+    }
+}
