@@ -8,8 +8,8 @@ public class ItemSpit extends ItemBlock {
 
 	public ItemSpit(Block block) {
 		super(block);
-		this.setRegistryName("spit");
-		this.setUnlocalizedName("spit");
+		this.setRegistryName(block.getRegistryName());
+		this.setUnlocalizedName(block.getUnlocalizedName());
 		this.setCreativeTab(CreativeTabs.MISC);
 	}
 
