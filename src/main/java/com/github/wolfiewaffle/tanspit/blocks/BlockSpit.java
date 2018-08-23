@@ -2,6 +2,7 @@ package com.github.wolfiewaffle.tanspit.blocks;
 
 import java.util.Random;
 
+import com.github.wolfiewaffle.tanspit.TANSpit;
 import com.github.wolfiewaffle.tanspit.tileentity.TileEntitySpit;
 
 import net.minecraft.block.Block;
@@ -13,12 +14,14 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.InventoryHelper;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -85,6 +88,19 @@ public class BlockSpit extends BlockContainer {
 
 			// If player is holding item
 			if (!item.isEmpty()) {
+				
+				// If item allowed in config
+				for (int z = 0; z < TANSpit.CONFIG.itemList.length; z++) {
+					if (Item.REGISTRY.getObject(new ResourceLocation(TANSpit.CONFIG.itemList[z])) == item.getItem()) {
+						if (TANSpit.CONFIG.isItemListBlacklist) {
+							return true;
+						}
+					} else {
+						if (!TANSpit.CONFIG.isItemListBlacklist && z == TANSpit.CONFIG.itemList.length - 1) {
+							return true;
+						}
+					}
+				}
 
 				// Find an empty slot
 				if (te.inventory().getStackInSlot(i).isEmpty()) {
