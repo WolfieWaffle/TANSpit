@@ -2,6 +2,7 @@ package com.github.wolfiewaffle.tanspit.blocks;
 
 import java.util.Random;
 
+import com.github.wolfiewaffle.tanspit.TANSpit;
 import com.github.wolfiewaffle.tanspit.tileentity.TileEntitySpit;
 
 import net.minecraft.block.Block;
@@ -9,19 +10,24 @@ import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.InventoryHelper;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.items.IItemHandler;
@@ -85,6 +91,19 @@ public class BlockSpit extends BlockContainer {
 
 			// If player is holding item
 			if (!item.isEmpty()) {
+				
+				// If item allowed in config
+				for (int z = 0; z < TANSpit.CONFIG.itemList.length; z++) {
+					if (Item.REGISTRY.getObject(new ResourceLocation(TANSpit.CONFIG.itemList[z])) == item.getItem()) {
+						if (TANSpit.CONFIG.isItemListBlacklist) {
+							return true;
+						}
+					} else {
+						if (!TANSpit.CONFIG.isItemListBlacklist && z == TANSpit.CONFIG.itemList.length - 1) {
+							return true;
+						}
+					}
+				}
 
 				// Find an empty slot
 				if (te.inventory().getStackInSlot(i).isEmpty()) {
@@ -102,6 +121,7 @@ public class BlockSpit extends BlockContainer {
 				if (!te.inventory().getStackInSlot(i).isEmpty()) {
 
 					// Take item
+					onCrafting(playerIn, te.inventory().getStackInSlot(i));
 					playerIn.inventory.addItemStackToInventory(te.inventory().getStackInSlot(i));
 					te.inventory().extractItem(i, 1, false);
 
@@ -127,6 +147,42 @@ public class BlockSpit extends BlockContainer {
 			return false;
 		}
 		return super.canPlaceBlockOnSide(worldIn, pos, side);
+	}
+
+	/**
+	 * the itemStack passed in is the output - ie, iron ingots, and pickaxes,
+	 * not ore and wood.
+	 * 
+	 * COPIED FROM SlotFuranceOutput
+	 */
+	protected void onCrafting(EntityPlayer player, ItemStack stack) {
+
+		stack.onCrafting(player.world, player, stack.getCount());
+
+		if (!player.world.isRemote) {
+			int itemCount = stack.getCount();
+			float xpFloat = FurnaceRecipes.instance().getSmeltingExperience(stack);
+
+			if (xpFloat == 0.0F) {
+				itemCount = 0;
+			} else if (xpFloat < 1.0F) {
+				int j = MathHelper.floor((float) itemCount * xpFloat);
+
+				if (j < MathHelper.ceil((float) itemCount * xpFloat) && Math.random() < (double) ((float) itemCount * xpFloat - (float) j)) {
+					++j;
+				}
+
+				itemCount = j;
+			}
+
+			while (itemCount > 0) {
+				int k = EntityXPOrb.getXPSplit(itemCount);
+				itemCount -= k;
+				player.world.spawnEntity(new EntityXPOrb(player.world, player.posX, player.posY + 0.5D, player.posZ + 0.5D, k));
+			}
+		}
+
+		net.minecraftforge.fml.common.FMLCommonHandler.instance().firePlayerSmeltedEvent(player, stack);
 	}
 
 	public boolean canBlockStay(World worldIn, BlockPos pos, IBlockState state) {

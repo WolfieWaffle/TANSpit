@@ -102,7 +102,7 @@ public class TileEntitySpit extends TileEntity implements ITickable {
 						// Attempt to cook items
 						ItemStack stack = items.getStackInSlot(i);
 
-						if (!getCookingResult(stack).isEmpty()) {
+						if (!getCookingResult(stack).isEmpty() && !stack.isEmpty()) {
 							items.setStackInSlot(i, getCookingResult(stack));
 						}
 					}
